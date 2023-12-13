@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <!-- Font CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+        integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <!-- css -->
+    <!-- <link rel="stylesheet" href="modal.css"> -->
+    <style>
+        body {
+            font-family: system-ui;
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+        }
+
+        #card {
+            padding: 0px 25px 25px 25px;
+
+        }
+
+        #tablelist {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 90vh;
+        }
+
+        .img-container {
+            width: 250px;
+            height: 30%;
+            margin-right: 20px;
+        }
+
+        .img {
+            max-width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- header -->
+    <header class="p-3" style="background-color: #0d47a1;">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <svg class="bi me-2" width="40" height="35" role="img" aria-label="logo">
+                        <image width="35" xlink:href="static/img/logo.png"></image>
+                    </svg>
+                </a>
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a class="nav-link fw-bold text-warning px-1">STELY</a></li>
+                    <li><a href="#" class="nav-link px-2 text-white">Home</a></li>
+                    <li><a href="/doctor" class="nav-link px-2 text-white">Doctors</a></li>
+                    <li><a href="/blog" class="nav-link px-2 text-white">Blog</a></li>
+                    <li><a href="/about" class="nav-link px-2 text-white">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content here -->
+    <div id="tablelist">
+        <div class="img-container">
+            <img src="..\static\doctor2.jpg" class="img-fluid" alt="side image">
+        </div>
+        <div class="card" style="background-color: rgb(245, 245, 245); width: 1000px;" id="card">
+            <h2 style="padding-top: 25px; color: #051e45;" class="fw-bold">LIST DOCTOR</h2>
+            <div class="d-flex justify-content-between">
+                <form class="d-flex form-container" role="search" style="width: 400px;">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </form>
+                <div class="ms-auto">
+                    <button class="btn btn-primary" type="submit">Edit</button>
+                    <a href="#wrab"><button class="btn btn-primary" type="submit">Add Member</button></a>
+                </div>
+            </div>
+
+            <div class="card">
+                <table class="table table-hover" style="background-color: white;">
+                    <thead>
+                        <tr class="table-warning">
+                            <th scope="col">No.</th>
+                            <th scope="col">Nama</th>
+                            <th scope="col">Poli</th>
+                            <th scope="col">Nomor Telepon</th>
+                            <th scope="col">Akses</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Password</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td scope="row">1</td>
+                            <td>Mark</td>
+                            <td>Poli Umum</td>
+                            <td>0812434235</td>
+                            <td><button class="btn btn-warning btn-sm">Doctor</button></td>
+                            <td>DRGIACOMO</td>
+                            <td>*********</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">2</td>
+                            <td>Jacob</td>
+                            <td>Poli THT</td>
+                            <td>0812434235</td>
+                            <td><button class="btn btn-warning btn-sm">Doctor</button></td>
+                            <td>DRJACOB</td>
+                            <td>*********</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">3</td>
+                            <td>Mark</td>
+                            <td>Poli Umum</td>
+                            <td>0812434235</td>
+                            <td><button class="btn btn-warning btn-sm">Doctor</button></td>
+                            <td>DRGIACOMO</td>
+                            <td>*********</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">4</td>
+                            <td>Jacob</td>
+                            <td>Poli THT</td>
+                            <td>0812434235</td>
+                            <td><button class="btn btn-warning btn-sm">Doctor</button></td>
+                            <td>DRJACOB</td>
+                            <td>*********</td>
+                        </tr>
+                        <tr>
+                            <td scope="row">5</td>
+                            <td>Mark</td>
+                            <td>Poli Umum</td>
+                            <td>0812434235</td>
+                            <td><button class="btn btn-warning btn-sm">Doctor</button></td>
+                            <td>DRGIACOMO</td>
+                            <td>*********</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-between" style="padding-top: 20px;">
+                <div>
+                    <button class="btn btn-danger" type="submit">Logout</button>
+                </div>
+                <div class="ms-auto">
+                    <!-- <button class="btn btn-primary" type="submit">Previous</button>
+                    <button class="btn btn-primary" type="submit">Next</button> -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <!-- POP UP -->
+    <div href="" class="wrab" id="wrab">
+        <div class="bg-color">
+            <div class="modal" id="modal">
+                <p><a href="">X</a></p>
+                <h1 class="label">Login</h1>
+                <form action="" method="get" accept-charset="utf-8">
+                    <label for="">Email:</label>
+                    <input type="text" placeholder="Masukan Email" id="name">
+                    <label for="">Password:</label>
+                    <input type="password" placeholder="Masukan Password" id="sandi">
+                    <button type="submit" class="btn2" id="btn2">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark py-4 mt-auto copyright-footer">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto">
+                    <div class="small m-0 text-white">Copyright © <span class="fw-bold text-warning">STELY</span> 2023
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#">Home</a>
+                    <span class="text-white mx-1">·</span>
+                    <a class="link-light small" href="/doctor">Doctors</a>
+                    <span class="text-white mx-1">·</span>
+                    <a class="link-light small" href="/blog">Blog</a>
+                    <span class="text-white mx-1">·</span>
+                    <a class="link-light small" href="/about">About</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>
