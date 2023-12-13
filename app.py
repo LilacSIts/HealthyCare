@@ -9,11 +9,17 @@ import hashlib
 
 app = Flask(__name__)
 
+MONGODB_CONNECTION_STRING = 'mongodb+srv://test:sparta@cluster0.dj3jxz6.mongodb.net/?retryWrites=true&w=majority'
+client = MongoClient(MONGODB_CONNECTION_STRING)
+db = client.dbsparta_plus_week4
+
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['UPLOAD_FOLDER'] = '/static/profile_pics'
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
+
+
 
 SECRET_KEY = 'STEALY'
 MONGODB_URL = os.environ.get("MONGODB_URL")
