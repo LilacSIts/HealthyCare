@@ -17,7 +17,7 @@
 
 <body>
     <!-- header -->
-    <header class="p-3" style="background-color: #0d47a1;">
+    <header class="p-3" style="background-color: #313131;">
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                 <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
@@ -28,40 +28,12 @@
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a class="nav-link fw-bold text-warning px-1">STELY</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">Home</a></li>
+                    <li><a href="/" class="nav-link px-2 text-white">Home</a></li>
                     <li><a href="/doctor" class="nav-link px-2 text-white">Doctors</a></li>
                     <li><a href="/blog" class="nav-link px-2 text-white">Blog</a></li>
                     <li><a href="/about" class="nav-link px-2 text-white">About</a></li>
                 </ul>
 
-                <!-- <div class="text-end">
-                    <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        Login
-                    </button>
-            
-                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title col-9 fs-5" id="staticBackdropLabel">Choose your login
-                                                    methods</h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-            
-                                            <div class="modal-body text-center mt-2 mb-2">
-                                                <a href="/login"><button type="button" class="btn btn-primary btn-square-md"><i
-                                                            class="bi bi-person"></i> Patient</button></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href=""><button type="button" class="btn btn-warning">Sign-up</button></a>
-                            </div>
-                        </div>
-                    </div> -->
             </div>
             
         </div>
@@ -73,13 +45,13 @@
 
     <!-- Content here -->
     <div class="img-container mx-auto" style="width: 50%;">
-        <img src="..\static\doctor1.jpg" class="img-fluid" alt="head image">
+        <img src="\static\doctor1.jpg" class="img-fluid" alt="head image">
     </div>
 
     <div class="container-fluid" style="padding-bottom: 50px;">
         <div class="row">
             <div class="col-md-7 mx-auto" style="background-color: rgb(242, 242, 242);">
-                <h4 style="padding-top: 20px;"> Consultation Application </h4>
+                <h4 style="padding-top: 20px; font-weight: bold;"> Consultation Application </h4>
                 <hr>
                     <div class="card" style="width: auto;"  >
                         <div class="card-body">
@@ -90,24 +62,25 @@
                             <li>Menjelaskan rentang waktu gejala yang dialami</li>
                             <p>Jika semua data yang dibutuhkan telah lengkap, silakan klik tombol "Ajukan Konsultasi"</p>
                             <div class="d-flex justify-content-end">
-                                <a href="/konsult.html" class="btn btn-primary">Ajukan Konsultasi</a>
+                                <a href="/konsult" class="btn btn-success">Ajukan Konsultasi</a>
                             </div>
                         </div>
                     </div>
             </div>
 
-            <div class="col-md-4 mx-auto" style="background-color: rgb(242, 242, 242);">
-                <h4 style="padding-top: 20px;">Consultation List</h4>
+            <div class="col-md-4 mx-auto" style="background-color: rgb(242, 242, 242); padding-bottom: 20px;">
+                <h4 style="padding-top: 20px; font-weight: bold;">Consultation List</h4>
                 <hr>
-                <div class="container text-center">
+                <div class="container text-end">
                     <div class="row" style="padding-bottom: 10px;">
                         <div class="col">
                             <div class="card" style="width: auto;">
                                 <div class="card-body">
                                     <h5 class="card-title">Keluhan oleh Dr. xxxx</h5>
-                                    <p class="card-text">Some quick example text to build on the card title and make up
-                                        the bulk of the card's content.</p>
-                                    <a href="#" class="btn btn-primary">View more</a>
+                                    <p class="card-text">Berdasarkan pemeriksaan awal dan data yang telah diperoleh, tampaknya ada indikasi adanya gangguan pada sistem kardiovaskular. 
+                                        Kami akan melakukan pemeriksaan lebih lanjut</p>
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop">View More</button>
                                 </div>
                             </div>
                         </div>
@@ -117,9 +90,8 @@
                             <div class="card" style="width: auto;">
                                 <div class="card-body">
                                     <h5 class="card-title">Keluhan oleh Dr. xxxx</h5>
-                                    <p class="card-text">Some quick example text to build on the card title and make up
-                                        the bulk of the card's content.</p>
-                                    <a href="#" class="btn btn-primary">View more</a>
+                                    <p class="card-text">kami akan memberikan informasi dan edukasi mengenai perubahan gaya hidup yang mendukung kesehatan jantung. Penting untuk kami untuk melakukan pemantauan secara berkala dan berkolaborasi dengan Anda untuk mencapai penanganan yang optimal.</p>
+                                    <a href="#" class="btn btn-success">View more</a>
                                 </div>
                             </div>
                         </div>
@@ -129,9 +101,8 @@
                             <div class="card" style="width: auto;">
                                 <div class="card-body">
                                     <h5 class="card-title">Keluhan oleh Dr. xxxx</h5>
-                                    <p class="card-text">Some quick example text to build on the card title and make up
-                                        the bulk of the card's content.</p>
-                                    <a href="#" class="btn btn-primary">View more</a>
+                                    <p class="card-text">Saya memahami bahwa kondisi ini dapat menimbulkan kekhawatiran, dan kami akan berusaha memberikan dukungan penuh serta menjelaskan dengan jelas setiap langkah proses diagnostik dan rencana pengelolaan yang dibutuhkan. </p>
+                                    <a href="#" class="btn btn-success">View more</a>
                                 </div>
                             </div>
                         </div>
@@ -143,6 +114,49 @@
         </div>
     </div>
 
+ <!-- POP UP -->
+ <div class="text-end">
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title col-9 fs-5" id="staticBackdropLabel">
+                                    Connsultation</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close">Close</button>
+                            </div>
+
+                            <div class="modal-body mt-2 mb-2">
+                                <div class="text-start">
+                                    <div class="row" style="padding-bottom: 10px;">
+                                        <div class="col">
+                                            <div class="card" style="width: auto;">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Dr. xxxx</h5>
+                                                    <p class="card-text">
+                                                        <h5>Keluhan</h5>
+                                                        Pasien mengeluhkan adanya nyeri dada yang terjadi secara berkala, disertai dengan sesak nafas dan kelelahan yang meningkat. Keluhan ini telah dirasakannya selama beberapa minggu terakhir, dan gejalanya semakin mengganggu aktivitas sehari-hari.
+                                                    </p>
+                                                    <p class="card-text">
+                                                        <h5>Jawaban</h5>
+                                                        Saudara/i yang terhormat, terima kasih telah berbagi mengenai gejala yang Anda alami. Berdasarkan pemeriksaan awal, kami menduga adanya gangguan pada sistem kardiovaskular. Untuk memastikan diagnosis dan merencanakan langkah selanjutnya, kami akan melibatkan tes diagnostik lebih lanjut seperti elektrokardiogram dan tes fungsi pernapasan. Saya memahami bahwa kondisi ini dapat menimbulkan kekhawatiran, dan kami akan berusaha memberikan dukungan penuh serta menjelaskan dengan jelas setiap langkah proses diagnostik dan rencana pengelolaan yang dibutuhkan. Selain itu, penting untuk kami membahas perubahan gaya hidup yang dapat membantu meningkatkan kesehatan kardiovaskular Anda. Kami siap mendengarkan setiap pertanyaan atau kekhawatiran tambahan yang Anda miliki dan berkomitmen untuk bekerja sama demi kesejahteraan Anda.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
 
 
     <!-- FOOTER -->

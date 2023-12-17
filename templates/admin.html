@@ -54,11 +54,113 @@
             height: 100%;
         }
     </style>
+
+<script>
+    function addmember() {
+        let inputPassword = $("#input-password")
+        let password = inputPassword.val();
+        let email = $("#input-email").val();
+        let name = $("#input-name").val();
+        let poli = $("#input-poli").val();
+        let number = $("#input-number").val();
+        let role = $("#input-role").val();
+
+
+        if (email === "") {
+            $("#help-email").text("Please input your email.");
+            $("#input-email").focus();
+            return;
+        } else {
+            $("#help-email").text("");
+        }
+
+        if (name === "") {
+            $("#help-fname").text("Please input your first name.");
+            $("#input-fname").focus();
+            return;
+        } else {
+            $("#help-fname").text("");
+        }
+
+        let helpPassword = $("#help-password");
+        if (password === "") {
+            helpPassword.text("Please enter your password")
+                .removeClass("text-secondary")
+                .addClass("text-danger");
+            inputPassword.focus();
+            return;
+        } else if (!is_password(password)) {
+            helpPassword.text("For your password, please enter 8-20 English characters, numbers, or the following special characters (!@#$%^&*)")
+                .removeClass("text-secondary")
+                .addClass("text-danger");
+            inputPassword.focus();
+            return;
+        } else {
+            helpPassword.text("This password can be used!")
+                .removeClass("text-danger")
+                .addClass("text-success")
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: "/addmember/save",
+            data: {
+                email_give: email,
+                password_give: password,
+                name_give: name,
+                poli_give: poli,
+                number_give: number,
+                role_give: role
+            },
+            success: function (response) {
+                alert("Member Added!");
+                window.location.replace("/admin");
+            }
+        });
+    }
+
+    function is_password(asValue) {
+        var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;
+        return regExp.test(asValue);
+    }
+
+    function sign_out() {
+            $.removeCookie('TOKEN_KEY', {path: '/'});
+            alert('You have been Sign Out!');
+            window.location.href = '/';
+    }
+
+    function searchByName() {
+        let searchQuery = $("#searchInput").val();
+        $.ajax({
+            type: "POST",
+            url: "/search",
+            data: { search_query: searchQuery },
+            success: function (response) {
+                if (response.result === "success") {
+                    displaySearchResults(response.search_results);
+                } else {
+                    alert("Search failed. Please try again.");
+                }
+            },
+        });
+    }
+
+function displaySearchResults(results) {
+    let resultsContainer = $("#searchResults");
+    resultsContainer.empty();
+    for (let i = 0; i < results.length; i++) {
+        resultsContainer.append(`<p>${results[i].first_name} ${results[i].last_name}</p>`);
+        // tambahkan kolom lainnya jika diperlukan
+    }
+}
+
+</script>
 </head>
 
 <body>
     <!-- header -->
-    <header class="p-3" style="background-color: #0d47a1;">
+    <header class="p-3" style="background-color: #313131;">
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                 <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
@@ -69,7 +171,7 @@
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a class="nav-link fw-bold text-warning px-1">STELY</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">Home</a></li>
+                    <li><a href="/" class="nav-link px-2 text-white">Home</a></li>
                     <li><a href="/doctor" class="nav-link px-2 text-white">Doctors</a></li>
                     <li><a href="/blog" class="nav-link px-2 text-white">Blog</a></li>
                     <li><a href="/about" class="nav-link px-2 text-white">About</a></li>
@@ -84,19 +186,21 @@
             <img src="..\static\doctor2.jpg" class="img-fluid" alt="side image">
         </div>
         <div class="card" style="background-color: rgb(245, 245, 245); width: 1000px;" id="card">
-            <h2 style="padding-top: 25px; color: #051e45;" class="fw-bold">LIST DOCTOR</h2>
+            <h2 style="padding-top: 25px; color: #313131;" class="fw-bold">LIST DOCTOR</h2>
             <div class="d-flex justify-content-between">
                 <form class="d-flex form-container" role="search" style="width: 400px;">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-primary" type="submit">Search</button>
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchInput">
+                    <button class="btn btn-success" type="submit" onclick="searchByName()">Search</button>
                 </form>
                 <div class="ms-auto">
-                    <button class="btn btn-primary" type="submit">Edit</button>
-                    <a href="#wrab"><button class="btn btn-primary" type="submit">Add Member</button></a>
+                    <button class="btn btn-success" type="submit">Edit</button>
+                    <!-- <a href="#wrab"><button class="btn btn-primary" type="submit">Add Member</button></a> -->
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop">Add Member</button>
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" id="searchResults">
                 <table class="table table-hover" style="background-color: white;">
                     <thead>
                         <tr class="table-warning">
@@ -105,7 +209,7 @@
                             <th scope="col">Poli</th>
                             <th scope="col">Nomor Telepon</th>
                             <th scope="col">Akses</th>
-                            <th scope="col">Username</th>
+                            <th scope="col">Email</th>
                             <th scope="col">Password</th>
                         </tr>
                     </thead>
@@ -117,7 +221,7 @@
                             <td>Poli Umum</td>
                             <td>0812434235</td>
                             <td><button class="btn btn-warning btn-sm">Doctor</button></td>
-                            <td>DRGIACOMO</td>
+                            <td>giacomo@gmail.com</td>
                             <td>*********</td>
                         </tr>
                         <tr>
@@ -126,7 +230,7 @@
                             <td>Poli THT</td>
                             <td>0812434235</td>
                             <td><button class="btn btn-warning btn-sm">Doctor</button></td>
-                            <td>DRJACOB</td>
+                            <td>giacomo@gmail.com</td>
                             <td>*********</td>
                         </tr>
                         <tr>
@@ -135,7 +239,7 @@
                             <td>Poli Umum</td>
                             <td>0812434235</td>
                             <td><button class="btn btn-warning btn-sm">Doctor</button></td>
-                            <td>DRGIACOMO</td>
+                            <td>giacomo@gmail.com</td>
                             <td>*********</td>
                         </tr>
                         <tr>
@@ -144,7 +248,7 @@
                             <td>Poli THT</td>
                             <td>0812434235</td>
                             <td><button class="btn btn-warning btn-sm">Doctor</button></td>
-                            <td>DRJACOB</td>
+                            <td>giacomo@gmail.com</td>
                             <td>*********</td>
                         </tr>
                         <tr>
@@ -153,15 +257,18 @@
                             <td>Poli Umum</td>
                             <td>0812434235</td>
                             <td><button class="btn btn-warning btn-sm">Doctor</button></td>
-                            <td>DRGIACOMO</td>
+                            <td>giacomo@gmail.com</td>
                             <td>*********</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
+
+
             <div class="d-flex justify-content-between" style="padding-top: 20px;">
                 <div>
-                    <button class="btn btn-danger" type="submit">Logout</button>
+                    <button class="btn btn-danger" type="submit" onclick="sign_out()">Logout</button>
                 </div>
                 <div class="ms-auto">
                     <!-- <button class="btn btn-primary" type="submit">Previous</button>
@@ -181,27 +288,68 @@
                 </div>
             </div>
 
-
-
+            
         </div>
     </div>
 
     <!-- POP UP -->
-    <div href="" class="wrab" id="wrab">
-        <div class="bg-color">
-            <div class="modal" id="modal">
-                <p><a href="">X</a></p>
-                <h1 class="label">Login</h1>
-                <form action="" method="get" accept-charset="utf-8">
-                    <label for="">Email:</label>
-                    <input type="text" placeholder="Masukan Email" id="name">
-                    <label for="">Password:</label>
-                    <input type="password" placeholder="Masukan Password" id="sandi">
-                    <button type="submit" class="btn2" id="btn2">Login</button>
-                </form>
+    <div class="text-end">
+        <!-- Button trigger modal -->
+
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title col-9 fs-5" id="staticBackdropLabel">
+                                        Add New Hospital Member</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-body mt-2 mb-2">
+                                    <div class="text-start">
+                                        <label for="exampleInputFirst" class="form-label small text-muted">Nama <small
+                                                class="text-danger">*</small></label>
+                                        <input type="text" class="form-control" id="input-name"
+                                            placeholder="Enter Your Name">
+                                        <label for="exampleInputFirst" class="form-label small text-muted">Nama Poli <small
+                                                class="text-danger">*</small></label>
+                                        <input type="text" class="form-control" id="input-poli"
+                                            placeholder="Enter Poli">
+                                        <label for="exampleInputFirst" class="form-label small text-muted">Nomor Telepon <small
+                                                class="text-danger">*</small></label>
+                                        <input type="number" class="form-control" id="input-number"
+                                            placeholder="Enter Phone Number">
+                                        <label for="exampleInputFirst" class="form-label small text-muted">Email <small
+                                                class="text-danger">*</small></label>
+                                        <input type="email" class="form-control" id="input-email"
+                                            placeholder="Enter Username">
+                                        <label for="exampleInputFirst" class="form-label small text-muted">Password <small
+                                                class="text-danger">*</small></label>
+                                        <input type="password" class="form-control" id="input-password"
+                                            placeholder="Enter Password">
+                                    </div>
+                                    <div class="text-center" style="padding-top: 20px;">
+                                        <label class="form-label text-muted"> Role :</label>
+                                        <select class="btn btn-warning" id="input-role">
+                                            <option value="" selected style="display:none">--choose your role--</option>
+                                            <option value="bintang.duinata311@gmail.com" id="doctor">Doctor</option>
+                                            <option value="drSriRaihanPutri@gmail.com" id="admin">Admin</option>
+                                        </select>
+                                        <a onclick="addmember()"><button type="button" class="btn btn-primary btn-square-md"><i
+                                            class="bi bi-person"></i> Add</button></a>
+                                    </div>
+
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
             </div>
         </div>
-    </div>
 
     <!-- FOOTER -->
     <footer class="bg-dark py-4 mt-auto copyright-footer">

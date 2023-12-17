@@ -74,11 +74,13 @@ def login():
 def sign_in():
     email_receive = request.form["email_give"]
     password_receive = request.form["password_give"]
+    role_receive = request.form["role_give"]
     pw_hash = hashlib.sha256(password_receive.encode("utf-8")).hexdigest()
     result = db.user_patient.find_one(
         {
             "email": email_receive,
             "password": pw_hash,
+            "role": role_receive,
         }
     )
     if result:
@@ -95,6 +97,13 @@ def sign_in():
                 "token": token,
             }
         )
+    if result:
+        if role_receive == "doctor":
+            return redirect("/doctor")
+        elif role_receive == "admin":
+            return redirect("/admin")
+        else:
+            return redirect("/homepatient")
     # id/password combination cannot be found
     else:
         return jsonify(
@@ -112,13 +121,95 @@ def about():
 def admin():
     return render_template("admin.html")
 
+@app.route("/addmember/save", methods=["POST"])
+def addmember():
+    name_receive = request.form.get("name_give")
+    poli_receive = request.form.get("poli_give")
+    number_receive = request.form.get("number_give")
+    role_receive = request.form.get("role_give")
+    email_receive = request.form.get("email_give")
+    password_receive = request.form.get("password_give")
+    password_hash = hashlib.sha256(password_receive.encode("utf-8")).hexdigest()
+    exists = bool(db.user_patient.find_one({"email" : email_receive}))
+    doc = {
+        "name" : name_receive,
+        "poli" : poli_receive,
+        "number" : number_receive,
+        "role" : role_receive,
+        "email" : email_receive,
+        "password" : password_hash,
+        "profile_name" : name_receive,
+        "profile_pic" : "",
+        "profile_pic_real" : "profile_pics/profile_placeholder.png",
+        "additional_details" : "",
+        "age" : "",
+        "mobile_number" : "",
+        "country" : "",
+        "state_region" : ""
+    }
+    db.user_patient.insert_one(doc)
+    return jsonify({"result" : "success", "exists" : exists})
+
+@app.route("/addmember/check_dup", methods=["POST"])
+def check_dupp():
+    email_receive = request.form.get("email_give")
+    exists = bool(db.user_patient.find_one({"email" : email_receive}))
+    return jsonify({"result" : "success", "exists" : exists})
+
+@app.route("/search", methods=["POST"])
+def search():
+    try:
+        search_query = request.form.get("search_query")
+        # Cari data berdasarkan nama di MongoDB
+        search_results = db.user_patient.find({"name": {"$regex": search_query, "$options": "i"}})
+        # Kembalikan hasil pencarian sebagai JSON
+        results_list = []
+        for result in search_results:
+            results_list.append({
+                "name": result["name"]
+            })
+        return jsonify({"result": "success", "search_results": results_list})
+    except Exception as e:
+        print(f"Error during search: {str(e)}")
+        return jsonify({"result": "fail", "msg": "Internal server error"})
+
+
 @app.route("/doctor")
 def doctor():
     return render_template("doctor.html")
 
+
+@app.route("/homepatient")
+def homepatient():
+    return render_template("home-patient.html")
+
 @app.route("/mylist")
 def mylist():
     return render_template("mylist.html")
+
+@app.route("/konsult")
+def konsultasi():
+    return render_template("konsult.html")
+
+@app.route("/konsult/save", methods=["POST"])
+def konsult():
+    fname_receive = request.form.get("fname_give")
+    lname_receive = request.form.get("lname_give")
+    number_receive = request.form.get("number_give")
+    doctor_receive = request.form.get("doctor_give")
+    keluhan_receive = request.form.get("keluhan_give")
+    email_receive = request.form.get("email_give")
+    exists = bool(db.user_patient.find_one({"email" : email_receive}))
+    doc = {
+        "first_name" : fname_receive,
+        "last_name" : lname_receive,
+        "number" : number_receive,
+        "doctor" : doctor_receive,
+        "keluhan" : keluhan_receive,
+        "profile_name" : fname_receive,
+    }
+    db.konsultasi.insert_one(doc)
+    return jsonify({"result" : "success", "exists" : exists})
 
 @app.route("/blog")
 def blog():

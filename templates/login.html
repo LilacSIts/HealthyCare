@@ -26,6 +26,7 @@
         function sign_in() {
             let email = $("#input-email").val();
             let password = $("#input-password").val();
+            // let role = $("#input-role").val();
 
             if (email === "") {
                 $("#help-email-login").text("Please input your email.");
@@ -48,6 +49,7 @@
                 data: {
                     email_give: email,
                     password_give: password,
+                    // role_give: role,
                 },
                 success: function (response) {
                     if (response["result"] === "success") {
@@ -56,6 +58,9 @@
                     } else {
                         alert(response["msg"]);
                     }
+                },
+                error: function (error) {
+                    console.error("Error during sign-in:", error);
                 },
             });
         }
@@ -74,7 +79,7 @@
 
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a class="nav-link fw-bold text-warning px-1">STELY</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">Home</a></li>
+                    <li><a href="/" class="nav-link px-2 text-white">Home</a></li>
                     <li><a href="/doctor" class="nav-link px-2 text-white">Doctors</a></li>
                     <li><a href="/blog" class="nav-link px-2 text-white">Blog</a></li>
                     <li><a href="/about" class="nav-link px-2 text-white">About</a></li>
@@ -104,7 +109,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a href="/Sign-up"><button type="button" class="btn btn-warning">Sign-up</button></a>
+                                <a href="/sign_up"><button type="button" class="btn btn-warning">Sign-up</button></a>
                             </div>
                         </div>
                     </div>
@@ -114,7 +119,7 @@
         
     </header>
 
-    <div style="margin-bottom: 121px; background-color: #52f0b4;">
+    <div style="margin-bottom: 50px; background-color: #52f0b4; padding-top: 20px;">
         <!-- Login -->
         <div class="container px-5 py-5 login">
             <!-- Login -->
