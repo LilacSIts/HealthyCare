@@ -231,6 +231,171 @@ def konsult():
 @app.route("/blog")
 def blog():
     return render_template("blog.html")
+# File Doctor
+#home page for doctor
+@app.route("/Home-doctor.html")
+def home_doctor():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        user_info = db.user_doctor.find_one({"email" : payload.get("id")})
+        return render_template("/doctor/Home-doctor.html", user_info = user_info)
+    except jwt.ExpiredSignatureError:
+        msg = "Your token has expired"
+        return redirect(url_for("login-doctor",msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = "There was a problem logging your in"
+        return redirect(url_for("login-doctor",msg=msg))
+
+#accept My List from doctor
+@app.route("/update_appointment", methods=["POST"])
+def update_appointment():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        message_receive = request.form.get("message_give")
+        date_receive = request.form.get("date_give")
+        time1_receive = request.form.get("time1_give")
+        time2_receive = request.form.get("time2_give")
+        id_receive = request.form.get("id_give")
+        new_doc = {
+            "doc_message" : message_receive,
+            "date_app" : date_receive,
+            "timestart_app" : time1_receive,
+            "timeend_app" : time2_receive,
+            "status" : 1
+        }
+
+        db.appointment_patient.update_one(
+            {"_id" : ObjectId(id_receive)},
+            {"$set" : new_doc}
+        )
+        return jsonify({
+            "result" : "success",
+            "msg" : "Appointment Accepted"
+        })
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+#cancel My List from doctor
+@app.route("/cancel_appointment", methods=["POST"])
+def cancel_appointment():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        message_receive = request.form.get("message_give")
+        id_receive = request.form.get("id_give")
+        new_doc = {
+            "doc_message" : message_receive,
+            "status" : 3
+        }
+
+        db.appointment_patient.update_one(
+            {"_id" : ObjectId(id_receive)},
+            {"$set" : new_doc}
+        )
+        return jsonify({
+            "result" : "success",
+            "msg" : "Appointment Declined"
+        })
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+#User info for doctor
+@app.route("/info-doctor.html")
+def info_doctor():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        user_info = db.user_doctor.find_one({"email" : payload.get("id")})
+        return render_template("doctor/info-doctor.html", user_info = user_info)
+    except jwt.ExpiredSignatureError:
+        msg = "Your token has expired"
+        return redirect(url_for("login_doctor",msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = "There was a problem logging your in"
+        return redirect(url_for("login_doctor",msg=msg))
+
+#User edit for doctor
+@app.route("/edit-doctor")
+def user_doctor():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        user_info = db.user_doctor.find_one({"email" : payload.get("id")})
+        return render_template("doctor/Info-doctor.html", user_info = user_info)
+    except jwt.ExpiredSignatureError:
+        msg = "Your token has expired"
+        return redirect(url_for("login_doctor",msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = "There was a problem logging your in"
+        return redirect(url_for("login_doctor",msg=msg))
+
+#doctor server edit
+@app.route("/update_docprofile", methods=["POST"])
+def update_docprofile():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        email = payload.get("id")
+        mobilenumber_receive = request.form.get("mobilenumber_give")
+        country_receive = request.form.get("country_give")
+        stateregion_receive = request.form.get("stateregion_give")
+        additionaldetails_receive = request.form.get("additionaldetails_give")
+        new_doc = {
+            "phone_number" : mobilenumber_receive,
+            "address_country" : country_receive,
+            "address_stateregion" : stateregion_receive,
+            "additional_details" : additionaldetails_receive,
+        }
+
+        if "file_give" in request.files:
+            file = request.files.get("file_give")
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{email}.{extension}"
+            file.save("./static/" + file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+
+        db.user_doctor.update_one(
+            {"email" : email},
+            {"$set" : new_doc}
+        )
+        # db.posts.update_one(
+        #     {"email" : email},
+        #     {"$set" : new_doc}
+        # )
+        return jsonify({
+            "result" : "success",
+            "msg" : "Your profile has been updated"
+        })
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 if __name__ == "__main__":
     app.run("0.0.0.0", port=5000, debug=True)
