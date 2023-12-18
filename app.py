@@ -6,6 +6,8 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 import jwt
 import hashlib
+from bson.objectid import ObjectId
+import json
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -16,7 +18,8 @@ load_dotenv(dotenv_path)
 
 
 
-SECRET_KEY = 'STEALY'
+SECRET_KEY = 'healthkey1223'
+app.secret_key = 'tessss'
 MONGODB_URL = os.environ.get("MONGODB_URL")
 DB_NAME = os.environ.get("DB_NAME")
 
@@ -74,20 +77,20 @@ def login():
 def sign_in():
     email_receive = request.form["email_give"]
     password_receive = request.form["password_give"]
-    role_receive = request.form["role_give"]
+    #role_receive = request.form["role_give"]
     pw_hash = hashlib.sha256(password_receive.encode("utf-8")).hexdigest()
     result = db.user_patient.find_one(
         {
             "email": email_receive,
             "password": pw_hash,
-            "role": role_receive,
+           # "role": role_receive, coba di close dulu kali?kaga bntr
         }
     )
     if result:
-        session['email_patient'] = email_receive
+        session['patient'] = email_receive
     if result:
         payload = {
-            "id": email_receive,\
+            "id": email_receive,
             "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
@@ -103,8 +106,8 @@ def sign_in():
         elif role_receive == "admin":
             return redirect("/admin")
         else:
-            return redirect("/homepatient")
-    # id/password combination cannot be found
+         return redirect("/homepatient")
+        #id/password combination cannot be found
     else:
         return jsonify(
             {
@@ -179,17 +182,31 @@ def doctor():
     return render_template("doctor.html")
 
 
-@app.route("/homepatient")
+@app.route("/home-patient")
 def homepatient():
-    return render_template("home-patient.html")
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        user_info = db.user_patient.find_one({"email" : payload.get("id")})
+        return render_template("patient/home-patient.html", user_info = user_info)
+    except jwt.ExpiredSignatureError:
+        msg = "Token Expired"
+        return redirect(url_for("home", msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = "Error"
+        return redirect(url_for("home", msg=msg))
 
 @app.route("/mylist")
 def mylist():
-    return render_template("mylist.html")
+    return render_template("/patient/mylist.html")
 
 @app.route("/konsult")
 def konsultasi():
-    return render_template("konsult.html")
+    return render_template("/patient/konsult.html")
 
 @app.route("/konsult/save", methods=["POST"])
 def konsult():

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+        integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+    <style>
+        body {
+            background: rgb(209, 204, 204);
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            get_app("{{ user_info.email }}");
+        })
+
+        function time2str(date) {
+            let today = new Date();
+            let time = (today - date) / 1000 / 60;
+            if (time < 60) {
+                return parseInt(time) + "minutes ago";
+            }
+            time = time / 60;
+            if (time < 24) {
+                return parseInt(time) + "hours ago";
+            }
+            time = time / 24;
+            if (time < 7) {
+                return parseInt(time) + "days ago";
+            }
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+            return `${year}.${month}.${day}`;
+        }
+
+        function get_app(email) {
+            if (email === undefined) {
+                email = ""
+            }
+            $("#app-box").empty();
+            $.ajax({
+                type: "GET",
+                url: `/get_app?email_give=${email}`,
+                data: {},
+                success: function (response) {
+                    if (response["result"] === "success") {
+                        let apps = response["apps"];
+                        // let appoint = response["appoint"];
+                        for (let i = 0; i < apps.length; i++) {
+                            let fname = apps[i]["first_name"];
+                            let lname = apps[i]["last_name"];
+                            let mobilenumber = apps[i]["mobile_number"];
+                            let doctor = apps[i]["doctor"];
+                            let email = apps[i]["email"];
+                            let message = apps[i]["message"];
+                            let date = apps[i]["date_app"];
+                            let time_start = apps[i]["timestart_app"];
+                            let time_end = apps[i]["timeend_app"]
+                            let status = apps[i]["status"];
+                            let docmessage = apps[i]["doc_message"]
+                            let docfname = apps[i]["doctor_firstName"]
+                            let doclname = apps[i]["doctor_lastName"]
+                            let specialist = apps[i]["doctor_specialist"]
+                            let docpfp = apps[i]["doctor_profilePicture"]
+                            let date_app = new Date(apps[i]["date"]);
+                            let time_post = time2str(date_app)
+                            let html_temp = "";
+                            if (status == 0) {
+                                html_temp = `
+                <div class="col-lg-4">
+                    <div class="position-relative mb-5">
+                        <div class="bg-white shadow-sm p-4 rounded-3">
+                            <div class="image d-flex mb-3 align-items-center">
+                                <img class="rounded-circle" style="width:64px; height:64px;" src="/static/${docpfp}" alt="...">
+                                <div class="ms-3">
+                                    <h5 class="fw-bold mb-1">Dr. ${docfname} ${doclname}</h5>
+                                    <p class="fw-light mb-0 text-muted small">${specialist}</p>
+                                </div>
+                            </div>    
+                            <h6 class="fw-bold mb-1">Form Detail <i class="small text-primary"></i><i class="fw-light text-muted small"> -${time_post}-</i></h6>
+                            <p class="text-muted fw-light mb-2">Name : ${fname} ${lname}</p>
+                            <p class="text-muted fw-light mb-2">Phone Number : ${mobilenumber}</p>
+                            <p class="text-muted fw-light mb-2">Doctor : ${doctor}</p>
+                            <p class="text-muted fw-light mb-2">Email : ${email}</p>
+                            <p class="text-muted fw-light mb-3">Message : ${message}</p>
+                            <h6 class="fw-bold mb-1">Status : Pending ⌛<i class="small text-primary"></i></h6>
+                            <p class="text-muted fw-light mb-2">(Please be patient!)</p>
+                        </div>
+                    </div>
+                </div>`;
+                            } else if (status == 1) {
+                                html_temp = `
+                <div class="col-lg-4">
+                    <div class="position-relative mb-5">
+                        <div class="bg-white shadow-sm p-4 rounded-3">
+                            <div class="image d-flex mb-3 align-items-center">
+                                <img class="rounded-circle" style="width:64px; height:64px;" src="/static/${docpfp}" alt="...">
+                                <div class="ms-3">
+                                    <h5 class="fw-bold mb-1">Dr. ${docfname} ${doclname}</h5>
+                                    <p class="fw-light mb-0 text-muted small">${specialist}</p>
+                                </div>
+                            </div>
+                            <h6 class="fw-bold mb-1">Form Detail <i class="small text-primary"></i><i class="fw-light text-muted small"> -${time_post}-</i></h6>
+                            <p class="text-muted fw-light mb-2">Name : ${fname} ${lname}</p>
+                            <p class="text-muted fw-light mb-2">Phone Number : ${mobilenumber}</p>
+                            <p class="text-muted fw-light mb-2">Doctor : ${doctor}</p>
+                            <p class="text-muted fw-light mb-2">Email : ${email}</p>
+                            <p class="text-muted fw-light mb-3">Message : ${message}</p>                            
+                            <h6 class="fw-bold mb-1">Status : Accepted ✔️<i class="small text-primary"></i></h6>
+                            <p class="text-muted fw-light mb-2">(Message : ${docmessage}. Date : ${date}. Time: ${time_start} - ${time_end})</p>                           
+                        </div>
+                    </div>
+                </div>`;
+                            } else {
+                                html_temp = `
+                <div class="col-lg-4">
+                    <div class="position-relative mb-5">
+                        <div class="bg-white shadow-sm p-4 rounded-3">
+                            <div class="image d-flex mb-3 align-items-center">
+                                <img class="rounded-circle" style="width:64px; height:64px;" src="/static/${docpfp}" alt="...">
+                                <div class="ms-3">
+                                    <h5 class="fw-bold mb-1">Dr. ${docfname} ${doclname}</h5>
+                                    <p class="fw-light mb-0 text-muted small">${specialist}</p>
+                                </div>
+                            </div>
+                            <h6 class="fw-bold mb-1">Form Detail <i class="small text-primary"></i><i class="fw-light text-muted small"> -${time_post}-</i></h6>
+                            <p class="text-muted fw-light mb-2">Name : ${fname} ${lname}</p>
+                            <p class="text-muted fw-light mb-2">Phone Number : ${mobilenumber}</p>
+                            <p class="text-muted fw-light mb-2">Doctor : ${doctor}</p>
+                            <p class="text-muted fw-light mb-2">Email : ${email}</p>
+                            <p class="text-muted fw-light mb-3">Message : ${message}</p>
+                            <h6 class="fw-bold mb-1">Status : Declined ❌<i class="small text-primary"></i></h6>
+                            <p class="text-muted fw-light mb-2">(message : ${docmessage})</p>
+                        </div>
+                    </div>
+                </div>`;
+                            }
+                            $("#app-box").append(html_temp)
+                        }
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <header class="p-3" style="background-color: #0d47a1;">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/home-patient" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <svg class="bi me-2" width="40" height="35" role="img" aria-label="logo">
+                        <image width="35" xlink:href="static/img/logo.png"></image>
+                    </svg>
+                </a>
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a class="nav-link fw-bold text-warning px-1">Stely</a></li>
+                    <li><a href="/home-patient" class="nav-link px-2 text-white">Home</a></li>
+                    <li><a href="/appointment" class="nav-link px-2 text-white">Consult</a></li>
+                    <li><a href="/appointment-doctor" class="nav-link px-2 text-white">My List</a></li>
+                    <li><a href="/doctor-homepatient" class="nav-link px-2 text-white">Doctors</a></li>
+                    <li><a href="/info-patient/{{ user_info.email }}" class="nav-link px-2 text-white">User Settings</a>
+                    </li>
+                </ul>
+
+                <div class="text-end" id="user-box">
+                    <a href="/info-patient/{{ user_info.email }}" class="image nav-link px-2 text-white">
+                        <img src="{{ url_for('static', filename=user_info.profile_pic_real) }}" alt="profilepic"
+                            style="width:32px; height:32px;" class="rounded-circle">
+                        {{ user_info.first_name }} {{ user_info.last_name }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </header>
+    <header class="py-5 inner-header" style="background-color: #0d47a1;">
+        <div class="container py-4 px-5">
+            <div class="row gx-5 align-items-center justify-content-center">
+                <div class="col-lg-12">
+                    <div class="text-center">
+                        <h1 class="fw-bold text-white">My List</h1>
+                        <p class="lead fw-normal text-white-50 mb-0">Make sure on time on your schedule</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="py-5">
+        <div class="container px-5 mt-5">
+            <div class="row gx-3" id="app-box">
+            </div>
+        </div>
+    </section>
+    <footer class="bg-dark py-4 copyright-footer" style="margin-top: 150px;">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto">
+                    <div class="small m-0 text-white">Copyright © <span class="fw-bold text-warning">Stely</span> 2023
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <a class="link-light small" href="/home-patient">Home</a>
+                    <span class="text-white mx-1">·</span>
+                    <a class="link-light small" href="/appointment">Consult</a>
+                    <span class="text-white mx-1">·</span>
+                    <a class="link-light small" href="#">My List</a>
+                    <span class="text-white mx-1">·</span>
+                    <a class="link-light small" href="/doctor-homepatient">Doctors</a>
+                    <span class="text-white mx-1">·</span>
+                    <a class="link-light small" href="/info-patient/{{ user_info.email }}">User Settings</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
