@@ -77,7 +77,7 @@ def login():
 def sign_in():
     email_receive = request.form["email_give"]
     password_receive = request.form["password_give"]
-    #role_receive = request.form["role_give"]
+    # role_receive = request.form["role_give"]
     pw_hash = hashlib.sha256(password_receive.encode("utf-8")).hexdigest()
     result = db.user_patient.find_one(
         {
@@ -124,17 +124,24 @@ def about():
 def admin():
     return render_template("admin.html")
 
+count = 0
+
 @app.route("/addmember/save", methods=["POST"])
 def addmember():
+    global count  # Use the global keyword to modify the global count variable
+    count += 1  # Increment the count
+
     name_receive = request.form.get("name_give")
     poli_receive = request.form.get("poli_give")
     number_receive = request.form.get("number_give")
     role_receive = request.form.get("role_give")
     email_receive = request.form.get("email_give")
+    num = count + 1
     password_receive = request.form.get("password_give")
     password_hash = hashlib.sha256(password_receive.encode("utf-8")).hexdigest()
     exists = bool(db.user_patient.find_one({"email" : email_receive}))
     doc = {
+        "num": num,
         "name" : name_receive,
         "poli" : poli_receive,
         "number" : number_receive,
@@ -149,6 +156,7 @@ def addmember():
         "mobile_number" : "",
         "country" : "",
         "state_region" : ""
+        
     }
     db.user_patient.insert_one(doc)
     return jsonify({"result" : "success", "exists" : exists})
@@ -158,6 +166,28 @@ def check_dupp():
     email_receive = request.form.get("email_give")
     exists = bool(db.user_patient.find_one({"email" : email_receive}))
     return jsonify({"result" : "success", "exists" : exists})
+
+@app.route("/addmember", methods=["GET"])
+def addmember_get():
+    # Tentukan peran yang diizinkan
+    allowed_roles = ['Doctor', 'Admin', 'doctor', 'admin']
+
+    # Tentukan kueri untuk hanya mendapatkan dokumen dengan peran yang diizinkan
+    query = {'role': {'$in': allowed_roles}}
+    doctor_list = list(db.user_patient.find(query, {'_id': False}))
+    for doctor in doctor_list:
+        for key, value in doctor.items():
+            if not value:
+                doctor[key] = "-"
+    return jsonify({'doctor': doctor_list})
+
+@app.route("/member/delete", methods=["POST"])
+def member_delete():
+    delete_receive = request.form["delete_give"]
+    db.user_patient.delete_one(
+        {'num': int(delete_receive)}
+    )
+    return jsonify({'msg': 'Delete done!'})
 
 @app.route("/search", methods=["POST"])
 def search():
