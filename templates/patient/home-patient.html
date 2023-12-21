@@ -42,10 +42,10 @@
                 </ul>
 
                 <div class="text-end" id="user-box">
-                    <a href="" class="image nav-link px-2 text-white">
-                        <img src="" alt=""
+                    <a href="/info-patient/{{ user_info.email }}" class="image nav-link px-2 text-white">
+                        <img src="{{ url_for('static', filename=user_info.profile_pic_real) }}" alt="profilepic"
                             style="width:32px; height:32px;" class="rounded-circle">
-                            User-Info
+                        {{ user_info.first_name }} {{ user_info.last_name }}
                     </a>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                             <a class="btn btn-light fw-bold text-primary fs-7 rounded-3 px-4 py-3 text-uppercase me-sm-1"
                                 href="/doctor-homepatient"> Find Doctors </a>
                             <a class="btn btn-outline-light fw-bold fs-7 rounded-3 px-4 py-3 text-uppercase"
-                                href="/appointment"> Get Consult </a>
+                                href="/konsult"> Get Consult </a>
                         </div>
                     </div>
                 </div>

@@ -8,6 +8,8 @@ import jwt
 import hashlib
 from bson.objectid import ObjectId
 import json
+from werkzeug.utils import secure_filename
+    
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -426,6 +428,114 @@ def update_docprofile():
         })
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
+
+@app.route("/user-patient/<email>", methods=["GET"])
+def user_patient(email):
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        user_info = db.user_patient.find_one(
+            {"email" : email},
+            {"_id" : False}
+            )
+        return render_template("patient/user-patient.html", user_info = user_info)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+
+# Server Side Edit User Pasien
+@app.route("/update_profile", methods=["POST"])
+def update_profile():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        email = payload.get("id")
+        fname_receive = request.form.get("fname_give")
+        lname_receive = request.form.get("lname_give")
+        mobilenumber_receive = request.form.get("mobilenumber_give")
+        country_receive = request.form.get("country_give")
+        stateregion_receive = request.form.get("stateregion_give")
+        age_receive = request.form.get("age_give")
+        additionaldetails_receive = request.form.get("additionaldetails_give")
+        new_doc = {
+            "first_name" : fname_receive,
+            "last_name" : lname_receive,
+            "mobile_number" : mobilenumber_receive,
+            "country" : country_receive,
+            "state_region" : stateregion_receive,
+            "age" : age_receive,
+            "additional_details" : additionaldetails_receive,
+        }
+        
+        if "file_give" in request.files:
+            file = request.files.get("file_give")
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{email}.{extension}"
+            file.save("./static/" + file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+
+        db.user_patient.update_one(
+            {"email" : email},
+            {"$set" : new_doc}
+        )
+        # db.posts.update_one(
+        #     {"email" : email},
+        #     {"$set" : new_doc}
+        # )
+        return jsonify({
+            "result" : "success",
+            "msg" : "Your profile has been updated"
+        })
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+    
+@app.route("/info-patient/<email>", methods=["GET"])
+def info_patient(email):
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        status= email == payload.get("id")
+        user_info = db.user_patient.find_one(
+            {"email" : email},
+            {"_id" : False}
+            )
+        return render_template("patient/info-patient.html", 
+                        user_info=user_info,
+                        status=status)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+         return redirect(url_for("home"))
+
+@app.route("/doctor-homepatient")
+def doctor_homepatient():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+        user_info = db.user_patient.find_one({"email" : payload.get("id")})
+        return render_template("patient/doctor-homepatient.html", user_info = user_info)
+    except jwt.ExpiredSignatureError:
+        msg = "Your token has expired"
+        return redirect(url_for("home",msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = "There was a problem logging your in"
+        return redirect(url_for("home",msg=msg))
 
 if __name__ == "__main__":
     app.run("0.0.0.0", port=5000, debug=True)
