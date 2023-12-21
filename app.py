@@ -9,7 +9,7 @@ import hashlib
 from bson.objectid import ObjectId
 import json
 from werkzeug.utils import secure_filename
-    
+
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -201,7 +201,13 @@ def search():
         results_list = []
         for result in search_results:
             results_list.append({
-                "name": result["name"]
+                "name": result["name"],
+                "poli": result["poli"],
+                "number": result["number"],
+                "num": result["num"],
+                "role": result["role"],
+                "password": result["password"],
+                "email": result["email"],
             })
         return jsonify({"result": "success", "search_results": results_list})
     except Exception as e:
